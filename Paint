@@ -191,7 +191,7 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
             }
             for (int y = 0; y < lineCount; y++) {
                 Line l = lines[y];
-                l.paintComponent(g);
+                l.draw(g);
             }
             
              // Draws all of the shapes in the ArrayList onto the canvas
