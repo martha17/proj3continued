@@ -106,9 +106,9 @@ public class Paint extends JPanel {
         redoButton.addActionListener(canvas);
         
         JComboBox<String> lineChoice = new JComboBox<>(); 
-        lineChoice.addItem("Aggregation");
-        lineChoice.addItem("Inheritance");
         lineChoice.addItem("Association");
+        lineChoice.addItem("Inheritance");
+        lineChoice.addItem("Aggregation");
             
             
         ActionListener cbActionListener = new ActionListener() {//add actionlistner to listen for change
@@ -116,14 +116,11 @@ public class Paint extends JPanel {
         public void actionPerformed(ActionEvent e) {
         String s = (String) lineChoice.getSelectedItem();//get the selected item
             switch (s) {//check for a match
-                    case "Aggregation":
-                        System.out.println("Aggregation selected");
+                    case "Association":
                         lineType=1;     break;
                     case "Inheritance":
-                        System.out.println("Inheritance selected");
                         lineType=2;     break;
-                    case "Association":
-                        System.out.println("Association selected");
+                    case "Aggregation":
                         lineType=3;     break;
                     default:
                         System.out.println("Default");
@@ -225,9 +222,9 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
             }
             int temp=lineType;
             // Draws all of the lines in the ArrayList onto the canvas
-            for (int y = 0; y < aglineCount; y++) {
+            for (int y = 0; y < aslineCount; y++) {
                 lineType=1;
-                Line l = Aglines[y];
+                Line l = Aslines[y];
                 l.draw(g);
             }
             
@@ -237,9 +234,9 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                 l.draw(g);
             }
             
-            for (int y = 0; y < aslineCount; y++) {
+            for (int y = 0; y < aglineCount; y++) {
                 lineType=3;
-                Line l = Aslines[y];
+                Line l = Aglines[y];
                 l.draw(g);
             }
             lineType=temp;
@@ -262,11 +259,11 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                     shapeCount=shapeCount-1;
                 }
                 shapes[shapeCount]=null;
-                while(aglineCount!=0){
-                    Aglines[aglineCount]=null;
-                    aglineCount=aglineCount-1;
+                while(aslineCount!=0){
+                    Aslines[aslineCount]=null;
+                    aslineCount=aslineCount-1;
                 }
-                Aglines[aglineCount]=null;
+                Aslines[aslineCount]=null;
                 
                 while(inlineCount!=0){
                     Inlines[inlineCount]=null;
@@ -274,11 +271,11 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                 }
                 Inlines[inlineCount]=null;
                 
-                while(aslineCount!=0){
-                    Aslines[aslineCount]=null;
-                    aslineCount=aslineCount-1;
+                while(aglineCount!=0){
+                    Aslines[aglineCount]=null;
+                    aglineCount=aglineCount-1;
                 }
-                Aslines[aslineCount]=null;
+                Aglines[aglineCount]=null;
                 
                 repaint();
             }
@@ -449,8 +446,8 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                 //Checks if there is a shape at the position where the mouse was clicked.
                         s = shapes[j];
                         if(s.containsPoint(x2, y2)&&i!=j&&lineType==1){
-                            Aglines[aglineCount]=new Line(x1,y1,x2,y2);
-                            aglineCount++;
+                            Aslines[aslineCount]=new Line(x1,y1,x2,y2);
+                            aslineCount++;
                             canvas.repaint();
                         }
                         if(s.containsPoint(x2, y2)&&i!=j&&lineType==2){
@@ -459,8 +456,8 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                             canvas.repaint();
                         }
                         if(s.containsPoint(x2, y2)&&i!=j&&lineType==3){
-                            Inlines[inlineCount]=new Line(x1,y1,x2,y2);
-                            inlineCount++;
+                            Aglines[aglineCount]=new Line(x1,y1,x2,y2);
+                            aglineCount++;
                             canvas.repaint();
                         }
                     }                    
