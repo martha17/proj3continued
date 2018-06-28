@@ -28,6 +28,8 @@ public class Line {
             drawArrow(g2, ne, sw, Color.black);
         if(Paint.getType()==2)
             drawArrowHead(g2, ne, sw, Color.black);
+        if(Paint.getType()==3)
+            drawDiamond(g2,ne,sw,Color.black);
     }
     //Association
     private void drawArrow(Graphics2D g2, Point tip, Point tail, Color color){
@@ -50,7 +52,36 @@ public class Line {
         double dx = tip.x - tail.x;
         double theta = Math.atan2(dy, dx);
         double x, y, rho = theta + phi;
-        //double xtemp = 0, ytemp = 0;
+        double p1x = 0, p1y = 0, p2x = 0, p2y = 0;
+        for(int j = 0; j < 2; j++){  
+            if(j==0){
+                x = tip.x - barb * Math.cos(rho);
+                y = tip.y - barb * Math.sin(rho);
+                p1x=x;
+                p1y=y;
+                rho = theta - phi;
+            }
+            
+            if(j==1){
+                x = tip.x - barb * Math.cos(rho);
+                y = tip.y - barb * Math.sin(rho);
+                p2x=x;
+                p2y=y;
+                rho = theta - phi;
+            }
+        }
+        g2.setColor(Color.WHITE);
+        g2.fillPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
+        g2.setColor(color);
+        g2.drawPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
+    }
+    
+    private void drawDiamond(Graphics2D g2, Point tip, Point tail, Color color){
+        g2.setPaint(color);
+        double dy = tip.y - tail.y;
+        double dx = tip.x - tail.x;
+        double theta = Math.atan2(dy, dx);
+        double x, y, rho = theta + phi;
         double p1x = 0, p1y = 0, p2x = 0, p2y = 0;
         for(int j = 0; j < 2; j++){  
             if(j==0){
