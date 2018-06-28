@@ -272,7 +272,7 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                 Inlines[inlineCount]=null;
                 
                 while(aglineCount!=0){
-                    Aslines[aglineCount]=null;
+                    Aglines[aglineCount]=null;
                     aglineCount=aglineCount-1;
                 }
                 Aglines[aglineCount]=null;
