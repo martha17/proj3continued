@@ -3,7 +3,7 @@ package paint;
 import java.awt.*;
 import java.awt.geom.*;
 
-//Associated
+/*//Associated
 public class Line {
     double phi;
     int barb;
@@ -39,6 +39,58 @@ public class Line {
             y = tip.y - barb * Math.sin(rho);
             g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
             rho = theta - phi;
+        }
+    }
+}*/
+//Inheritance
+public class Line {
+    double phi;
+    int barb;
+    int x1,y1,x2,y2;
+    Line(int x1, int y1, int x2, int y2){
+        this.x1=x1;
+        this.y1=y1;
+        this.x2=x2;
+        this.y2=y2;
+        phi = Math.toRadians(40);
+        barb = 20;
+    }
+    
+    void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        Point sw = new Point(x1, y1);
+        Point ne = new Point(x2, y2);
+        g2.setColor(Color.BLACK);
+        g2.draw(new Line2D.Double(sw, ne));
+        //drawArrowHead(g2, sw, ne, Color.black);
+        drawArrowHead(g2, ne, sw, Color.BLACK);
+    }
+        
+    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color){
+        g2.setPaint(color);
+        double dy = tip.y - tail.y;
+        double dx = tip.x - tail.x;
+        double theta = Math.atan2(dy, dx);
+        double x, y, rho = theta + phi;
+        double xtemp = 0, ytemp = 0;
+        for(int j = 0; j < 2; j++){  
+            if(j==0){
+                x = tip.x - barb * Math.cos(rho);
+                y = tip.y - barb * Math.sin(rho);
+                g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
+                rho = theta - phi;
+                xtemp=x;
+                ytemp=y;
+            }
+            
+            if(j==1){
+                x = tip.x - barb * Math.cos(rho);
+                y = tip.y - barb * Math.sin(rho);
+                g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
+                rho = theta - phi;
+                g2.draw(new Line2D.Double(xtemp, ytemp, x, y));
+            }
         }
     }
 }
