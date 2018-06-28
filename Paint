@@ -20,7 +20,7 @@ import java.awt.Color;
 
 public class Paint extends JPanel {
     /*Sets up the drawing area and row of buttons below it.*/
-
+    private static int lineType = 1;
     public Paint() {  
 
         setBackground(Color.LIGHT_GRAY);
@@ -104,6 +104,35 @@ public class Paint extends JPanel {
         undoButton.addActionListener(canvas);
         
         redoButton.addActionListener(canvas);
+        
+        JComboBox<String> lineChoice = new JComboBox<>(); 
+        lineChoice.addItem("Aggregation");
+        lineChoice.addItem("Inheritance");
+        lineChoice.addItem("Association");
+            
+            
+        ActionListener cbActionListener = new ActionListener() {//add actionlistner to listen for change
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        String s = (String) lineChoice.getSelectedItem();//get the selected item
+            switch (s) {//check for a match
+                    case "Aggregation":
+                        System.out.println("Aggregation selected");
+                        lineType=1;     break;
+                    case "Inheritance":
+                        System.out.println("Inheritance selected");
+                        lineType=2;     break;
+                    case "Association":
+                        System.out.println("Association selected");
+                        lineType=3;     break;
+                    default:
+                        System.out.println("Default");
+                        break;
+            }
+          }
+        };
+        
+        lineChoice.addActionListener(cbActionListener);
 
         JPanel bottom = new JPanel();   // panel that holds buttons
 
@@ -112,6 +141,8 @@ public class Paint extends JPanel {
         top.setLayout(new GridLayout(1,4,3,3));
 
         bottom.setLayout(new GridLayout(1,4,3,3));
+        
+        bottom.add(lineChoice);
         
         bottom.add(colorButtonS);
         
@@ -139,7 +170,10 @@ public class Paint extends JPanel {
 
         add(bottom, BorderLayout.SOUTH); //add button panel   
     } //end of constructor
-
+    
+    public static int getType(){
+        return lineType;
+    }
 Board canvas = new Board();  // creating the canvas
 
 public Point startPoint, endPoint;
@@ -189,12 +223,27 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
 		j += (pt * 96) / 76;
 		k++;
             }
-            for (int y = 0; y < lineCount; y++) {
-                Line l = lines[y];
+            int temp=lineType;
+            // Draws all of the lines in the ArrayList onto the canvas
+            for (int y = 0; y < aglineCount; y++) {
+                lineType=1;
+                Line l = Aglines[y];
                 l.draw(g);
             }
             
-             // Draws all of the shapes in the ArrayList onto the canvas
+            for (int y = 0; y < inlineCount; y++) {
+                lineType=2;
+                Line l = Inlines[y];
+                l.draw(g);
+            }
+            
+            for (int y = 0; y < aslineCount; y++) {
+                lineType=3;
+                Line l = Aslines[y];
+                l.draw(g);
+            }
+            lineType=temp;
+            // Draws all of the shapes in the ArrayList onto the canvas
             for (int y = 0; y < shapeCount; y++) {
                 Shape s = shapes[y];
                 s.draw(g);
@@ -213,11 +262,24 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                     shapeCount=shapeCount-1;
                 }
                 shapes[shapeCount]=null;
-                while(lineCount!=0){
-                    lines[lineCount]=null;
-                    lineCount=lineCount-1;
+                while(aglineCount!=0){
+                    Aglines[aglineCount]=null;
+                    aglineCount=aglineCount-1;
                 }
-                lines[lineCount]=null;
+                Aglines[aglineCount]=null;
+                
+                while(inlineCount!=0){
+                    Inlines[inlineCount]=null;
+                    inlineCount=inlineCount-1;
+                }
+                Inlines[inlineCount]=null;
+                
+                while(aslineCount!=0){
+                    Aslines[aslineCount]=null;
+                    aslineCount=aslineCount-1;
+                }
+                Aslines[aslineCount]=null;
+                
                 repaint();
             }
             
@@ -386,14 +448,23 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
                     for ( int j = shapeCount - 1; j >= 0; j-- ) {
                 //Checks if there is a shape at the position where the mouse was clicked.
                         s = shapes[j];
-                        if(s.containsPoint(x2, y2)&&i!=j){
-                            lines[lineCount]=new Line(x1,y1,x2,y2);
-                            lineCount++;
+                        if(s.containsPoint(x2, y2)&&i!=j&&lineType==1){
+                            Aglines[aglineCount]=new Line(x1,y1,x2,y2);
+                            aglineCount++;
+                            canvas.repaint();
+                        }
+                        if(s.containsPoint(x2, y2)&&i!=j&&lineType==2){
+                            Inlines[inlineCount]=new Line(x1,y1,x2,y2);
+                            inlineCount++;
+                            canvas.repaint();
+                        }
+                        if(s.containsPoint(x2, y2)&&i!=j&&lineType==3){
+                            Inlines[inlineCount]=new Line(x1,y1,x2,y2);
+                            inlineCount++;
                             canvas.repaint();
                         }
                     }                    
             }
-            
         }
               
             } else {
@@ -404,10 +475,14 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
 }// end of class Board
     int x1,y1,x2,y2;
     Shape[] shapes = new Shape[500]; // array that holds up to 500 shapes
-    Line[] lines = new Line[500];
+    Line[] Aglines = new Line[500];
+    Line[] Inlines = new Line[500];
+    Line[] Aslines = new Line[500];
     
     int shapeCount = 0;  // the actual number of shapes in the array
-    int lineCount = 0; // the actual number of lines in the array
+    int aglineCount = 0; // the actual number of lines in the array
+    int inlineCount = 0;
+    int aslineCount = 0;
 
     Color shapeColor = Color.black;  // default shape color
      
@@ -610,7 +685,7 @@ class Board extends JPanel implements ActionListener, MouseListener, MouseMotion
     /*Draws the shapes shown on the top panel.*/
     protected void paintComponent(Graphics g) {
         
-        super.paintComponent(g);   
+        super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
