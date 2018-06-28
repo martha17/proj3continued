@@ -2,6 +2,7 @@ package paint;
 
 import java.awt.*;
 import java.awt.geom.*;
+import static java.lang.Math.abs;
 
 public class Line {
     double phi;
@@ -29,7 +30,7 @@ public class Line {
         if(Paint.getType()==2)
             drawArrowHead(g2, ne, sw, Color.black);
         if(Paint.getType()==3)
-            drawDiamond(g2,ne,sw,Color.black);
+            drawDiamond(g2,sw,ne,Color.black);
     }
     //Association
     private void drawArrow(Graphics2D g2, Point tip, Point tail, Color color){
@@ -83,6 +84,7 @@ public class Line {
         double theta = Math.atan2(dy, dx);
         double x, y, rho = theta + phi;
         double p1x = 0, p1y = 0, p2x = 0, p2y = 0;
+        double p3x =0, p3y = 0;
         for(int j = 0; j < 2; j++){  
             if(j==0){
                 x = tip.x - barb * Math.cos(rho);
@@ -95,15 +97,22 @@ public class Line {
             if(j==1){
                 x = tip.x - barb * Math.cos(rho);
                 y = tip.y - barb * Math.sin(rho);
-                g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
                 p2x=x;
                 p2y=y;
                 rho = theta - phi;
             }
         }
+        if(tip.x>p1x){
+            p3x=p1x+(tip.x-p1x);
+            p3y=p1y-(tip.y-p1y);
+        } else {
+            p3x=p1x+(p1x-tip.x);
+            p3y=p1y-(p1y-tip.y);
+        }
+        
         g2.setColor(Color.WHITE);
-        g2.fillPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
+        g2.fillPolygon(new int[] {(int)p1x, (int)tip.x, (int)p2x, (int)p3x}, new int[] {(int)p1y, (int)tip.y, (int)p2y, (int)p3y},4);
         g2.setColor(color);
-        g2.drawPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
+        g2.drawPolygon(new int[] {(int)p1x, (int)tip.x, (int)p2x, (int)p3x}, new int[] {(int)p1y, (int)tip.y, (int)p2y, (int)p3y},4);
     }
 }
