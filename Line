@@ -73,24 +73,29 @@ public class Line {
         double dx = tip.x - tail.x;
         double theta = Math.atan2(dy, dx);
         double x, y, rho = theta + phi;
-        double xtemp = 0, ytemp = 0;
+        //double xtemp = 0, ytemp = 0;
+        double p1x = 0, p1y = 0, p2x = 0, p2y = 0;
         for(int j = 0; j < 2; j++){  
             if(j==0){
                 x = tip.x - barb * Math.cos(rho);
                 y = tip.y - barb * Math.sin(rho);
-                g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
+                p1x=x;
+                p1y=y;
                 rho = theta - phi;
-                xtemp=x;
-                ytemp=y;
             }
             
             if(j==1){
                 x = tip.x - barb * Math.cos(rho);
                 y = tip.y - barb * Math.sin(rho);
                 g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
+                p2x=x;
+                p2y=y;
                 rho = theta - phi;
-                g2.draw(new Line2D.Double(xtemp, ytemp, x, y));
             }
         }
+        g2.setColor(Color.WHITE);
+        g2.fillPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
+        g2.setColor(color);
+        g2.drawPolygon(new int[] {(int)p1x, (int)p2x, (int)tip.x}, new int[] {(int)p1y, (int)p2y, (int)tip.y},3);
     }
 }
